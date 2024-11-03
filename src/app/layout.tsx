@@ -1,10 +1,13 @@
-import "./globals.css";
+// app/layout.tsx
+import React from 'react';
+import './globals.css'; // Optional: Include any global CSS here
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const metadata = {
+  title: 'casemind.tech',
+  description: 'Welcome to casemind.tech, your simple chat application',
+};
+
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body>
@@ -12,4 +15,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;
