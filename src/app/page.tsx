@@ -44,7 +44,7 @@ export default function Preview() {
               height={50}
               className="align-bottom"
             />
-            <h1 className="text-3xl font-bold">legalQ.tech</h1>
+            <h1 className="text-3xl font-Bold">Paralegal.tech</h1>
           </header>
 
           {/* Main Content */}

@@ -77,7 +77,7 @@ export default function Chat() {
           height={50}
           className="align-bottom"
         />
-        <h1 className="text-3xl font-bold">legalQ.tech</h1>
+        <h1 className="text-3xl font-bold">Paralegal.tech</h1>
       </header>
 
       <div className="flex-grow pt-20 pb-40 overflow-y-auto space-y-4 p-4">
