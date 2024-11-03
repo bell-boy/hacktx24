@@ -1,18 +1,20 @@
 // app/chat.tsx
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import Image from 'next/image';
-import '@/styles/custom.css'; // Import the custom CSS file here
+import '@/styles/custom.css';
 
 export default function Chat() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
+  const messagesEndRef = useRef<HTMLDivElement>(null); // Reference to the end of messages list
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
+      // Add the user's input to the chat
       setMessages([...messages, { text: input, isUser: true }]);
       setInput("");
 
@@ -33,22 +35,27 @@ export default function Chat() {
     }
   };
 
+  // Scroll to the bottom of the messages when a new message is added
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
     <div className="min-h-screen flex flex-col bg-stone-900 text-gray-100 font-sans">
       {/* Fixed Header */}
-      <header className="fixed top-0 w-full bg-stone-900 text-white p-4 text-center w-full flex items-center justify-center space-x-2 z-10">
+      <header className="fixed top-0 w-full bg-stone-900 text-white p-4 text-center flex items-center justify-center space-x-2 z-10">
         <Image
-          src="/casemindlogo.png" // Path to the PNG file
+          src="/casemindlogo.png"
           alt="Logo"
-          width={50} // Adjust width as needed
-          height={50} // Adjust height as needed
+          width={50}
+          height={50}
           className="align-bottom"
         />
         <h1 className="text-3xl font-bold">casemind.tech</h1>
       </header>
 
       {/* Chat Messages Area */}
-      <div className="flex-grow pt-20 pb-24 overflow-y-auto space-y-4 p-4">
+      <div className="flex-grow pt-20 pb-32 overflow-y-auto space-y-4 p-4">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -65,6 +72,8 @@ export default function Chat() {
             </div>
           </div>
         ))}
+        {/* This div will act as the end reference for scrolling */}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Fixed Input Area */}
@@ -80,7 +89,6 @@ export default function Chat() {
             onKeyDown={handleKeyDown}
             placeholder="Type your message..."
           />
-
           <button
             type="submit"
             className="ml-1000 h-10 w-10 bg-stone-900 text-white rounded-full flex items-center justify-center hover:bg-stone-700 transition duration-150 -ml-20"
