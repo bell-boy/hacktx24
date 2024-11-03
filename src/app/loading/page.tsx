@@ -9,9 +9,9 @@ export default function Loading() {
         {/* Bouncing logo */}
         <div className="animate-bounce mb-4 flex justify-center">
           <Image
-            src="/casemindlogo.png" // Ensure this file exists in the public directory
+            src="/gaveled.png" // Ensure this file exists in the public directory
             alt="Loading Logo"
-            width={60} // Adjust size as needed
+            width={60} // Adjust size as neededs
             height={60} // Adjust size as needed
             priority // Ensure it loads quickly
           />

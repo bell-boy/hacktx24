@@ -1,18 +1,18 @@
 // app/preview_page.tsx
 'use client';
 
+import '@/styles/custom.css';
 import { useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Preview() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleStartChat = () => {
-    setIsLoading(true); // Show loading screen
+    setIsLoading(true);
     setTimeout(() => {
-      window.location.href = '/chat'; // Redirect to chat page after loading
-    }, 2000); // Display loading for 2 seconds
+      window.location.href = '/chat';
+    }, 2000);
   };
 
   return (
@@ -20,8 +20,16 @@ export default function Preview() {
       {isLoading ? (
         <div className="min-h-screen flex items-center justify-center bg-stone-800 text-gray-100">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-300 mx-auto mb-4"></div>
-            <p className="text-xl">Loading...</p>
+            <div className="animate-gavel mb-4 flex justify-center">
+              <Image
+                src="/gaveled.png" // Ensure this file exists in the public directory
+                alt="Loading Logo"
+                width={150}
+                height={150}
+                priority
+              />
+            </div>
+            <p className="text-xl">Almost There!</p>
           </div>
         </div>
       ) : (
@@ -29,10 +37,10 @@ export default function Preview() {
           {/* Fixed Header */}
           <header className="fixed top-0 w-full bg-stone-900 text-white p-5 text-center flex items-center justify-center space-x-2">
             <Image
-              src="/casemindlogo.png" // Path to the PNG file
+              src="/casemindlogo.png"
               alt="Logo"
-              width={50} // Adjust width as needed
-              height={50} // Adjust height as needed
+              width={50}
+              height={50}
               className="align-bottom"
             />
             <h1 className="text-3xl font-bold">casemind.tech</h1>

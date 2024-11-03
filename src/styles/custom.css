@@ -11,3 +11,19 @@ textarea {
     box-shadow: none !important;
   }
   
+  @keyframes gavelStrike {
+    0% {
+      transform: translateY(0) rotate(-40deg); /* Starting position, angled */
+    }
+    30% {
+      transform: translateY(15px) rotate(0deg); /* Downward motion, straight */
+    }
+    100% {
+      transform: translateY(0) rotate(-40deg); /* Return to start */
+    }
+  }
+  
+  .animate-gavel {
+    animation: gavelStrike 0.8s cubic-bezier(0.25, 1, 0.5, 1) infinite; /* Adjust speed and easing */
+  }
+  
