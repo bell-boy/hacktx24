@@ -44,7 +44,7 @@ export default function Chat() {
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-900 text-gray-100 font-sans">
-      {/* header */}
+      {/* Fixed Header */}
       <header className="fixed top-0 w-full bg-stone-900 text-white p-4 text-center flex items-center justify-center space-x-2 z-10">
         <Image
           src="/casemindlogo.png"
