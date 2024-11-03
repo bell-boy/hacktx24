@@ -12,7 +12,7 @@ export default function Preview() {
     setIsLoading(true);
     setTimeout(() => {
       window.location.href = '/chat';
-    }, 2000);
+    }, Math.random()*2500 + 500);
   };
 
   return (

@@ -13,13 +13,13 @@ textarea {
   
   @keyframes gavelStrike {
     0% {
-      transform: translateY(0) rotate(-40deg); /* Starting position, angled */
+      transform: translateY(0) rotate(-70deg); /* Starting position, angled */
     }
     30% {
       transform: translateY(15px) rotate(0deg); /* Downward motion, straight */
     }
     100% {
-      transform: translateY(0) rotate(-40deg); /* Return to start */
+      transform: translateY(0) rotate(-70deg); /* Return to start */
     }
   }
   
