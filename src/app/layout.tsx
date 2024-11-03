@@ -3,8 +3,8 @@ import React from 'react';
 import './globals.css'; // Optional: Include any global CSS here
 
 export const metadata = {
-  title: 'casemind.tech',
-  description: 'Welcome to casemind.tech, your simple chat application',
+  title: 'legalQ.tech',
+  description: 'Welcome to legalQ.tech, a legal assistant in the palm of your hands',
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
