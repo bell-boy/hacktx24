@@ -1,30 +1,53 @@
-// app/chat.tsx
 'use client';
-
 import { useState, useEffect, useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import Image from 'next/image';
 import '@/styles/custom.css';
+import ReactMarkdown from 'react-markdown';
 
 export default function Chat() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
-  const messagesEndRef = useRef<HTMLDivElement>(null); // Reference to the end of messages list
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
       // Add the user's input to the chat
       setMessages([...messages, { text: input, isUser: true }]);
+      const userInput = input; // Save current input to use later in the fetch response
       setInput("");
+      console.log(messages);
+      try {
+        // Send the input to the Flask server
+        const response = await fetch("http://127.0.0.1:5000/query", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ messages: [{ content: userInput }] }),
+        });
 
-      // Mock chatbot response after a short delay (for demo purposes)
-      setTimeout(() => {
+        if (response.ok) {
+          const data = await response.json(); // Expecting JSON response from the server
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: data.reply || "Server response received", isUser: false },
+          ]);
+        } else {
+          console.error("Server error:", response.statusText);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: "Error: Unable to get response from the server.", isUser: false },
+          ]);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
         setMessages((prevMessages) => [
           ...prevMessages,
-          { text: "This is a response from the chatbot.", isUser: false },
+          { text: "Error: Failed to connect to the server.", isUser: false },
         ]);
-      }, 500);
+      }
     }
   };
 
@@ -35,14 +58,12 @@ export default function Chat() {
     }
   };
 
-  // Scroll to the bottom of the messages when a new message is added
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-900 text-gray-100 font-sans">
-      {/* Fixed Header */}
       <header className="fixed top-0 w-full bg-stone-900 text-white p-4 text-center flex items-center justify-center space-x-2 z-10">
         <Image
           src="/casemindlogo.png"
@@ -54,7 +75,6 @@ export default function Chat() {
         <h1 className="text-3xl font-bold">casemind.tech</h1>
       </header>
 
-      {/* Chat Messages Area */}
       <div className="flex-grow pt-20 pb-32 overflow-y-auto space-y-4 p-4">
         {messages.map((message, index) => (
           <div
@@ -63,20 +83,18 @@ export default function Chat() {
           >
             <div
               className={`inline-block p-3 rounded-lg shadow-md ${message.isUser
-                ? 'bg-stone-800 text-white rounded-br-none' // User's message on the right
-                : 'bg-stone-700 text-white rounded-bl-none' // Chatbot's message on the left
+                ? 'bg-stone-800 text-white rounded-br-none'
+                : 'bg-stone-700 text-white rounded-bl-none'
                 }`}
               style={{ maxWidth: '70%' }}
             >
-              {message.text}
+              <ReactMarkdown>{message.text}</ReactMarkdown>
             </div>
           </div>
         ))}
-        {/* This div will act as the end reference for scrolling */}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Fixed Input Area */}
       <form
         onSubmit={handleSubmit}
         className="fixed bottom-0 w-full bg-stone-800 p-4 flex items-center justify-center shadow-inner z-10"
@@ -93,7 +111,6 @@ export default function Chat() {
             type="submit"
             className="ml-1000 h-10 w-10 bg-stone-900 text-white rounded-full flex items-center justify-center hover:bg-stone-700 transition duration-150 -ml-20"
           >
-            {/* Up arrow icon */}
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7 7 7M12 3v18" />
             </svg>
