@@ -1,10 +1,9 @@
-// app/chat.tsx
 'use client';
-
 import { useState, useEffect, useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import Image from 'next/image';
 import '@/styles/custom.css';
+import ReactMarkdown from 'react-markdown';
 
 export default function Chat() {
   const [input, setInput] = useState("");
@@ -12,21 +11,48 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
-      setMessages([...messages, { text: input, isUser: true }]);
+      const allMessages = [...messages, { text: input, isUser: true }];
+      setMessages(allMessages);
       setInput("");
       setIsLoading(true);
+      const userInput = input;
+      try {
+        // Send the input to the Flask server
+        const response = await fetch("http://137.184.44.223:8000/query", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({"messages": allMessages.map((message) => {
+            const roleString = message.isUser ? "user" : "assistant";
+            return { "role" : roleString , "content": message.text }
+          })}),
+        });
 
-      // Mock chatbot response after a short delay
-      setTimeout(() => {
+        if (response.ok) {
+          const data = await response.json(); // Expecting JSON response from the server
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: data.reply || "Server response received", isUser: false },
+          ]);
+        } else {
+          console.error("Server error:", response.statusText);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: "Error: Unable to get response from the server.", isUser: false },
+          ]);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
         setMessages((prevMessages) => [
           ...prevMessages,
-          { text: "This is a response from the chatbot.", isUser: false },
+          { text: "Error: Failed to connect to the server.", isUser: false },
         ]);
-        setIsLoading(false);
-      }, 1500);
+      }
+      setIsLoading(false);
     }
   };
 
@@ -44,7 +70,6 @@ export default function Chat() {
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-900 text-gray-100 font-sans">
-      {/* Fixed Header */}
       <header className="fixed top-0 w-full bg-stone-900 text-white p-4 text-center flex items-center justify-center space-x-2 z-10">
         <Image
           src="/casemindlogo.png"
@@ -56,7 +81,6 @@ export default function Chat() {
         <h1 className="text-3xl font-bold">legalQ.tech</h1>
       </header>
 
-      {/* chat messages */}
       <div className="flex-grow pt-20 pb-40 overflow-y-auto space-y-4 p-4">
         {messages.map((message, index) => (
           <div key={index} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
@@ -67,12 +91,12 @@ export default function Chat() {
                 }`}
               style={{ maxWidth: '70%' }}
             >
-              {message.text}
+              {/* Render Markdown here */}
+              <ReactMarkdown>{message.text}</ReactMarkdown>
             </div>
           </div>
         ))}
         
-        {/* loading dots */}
         {isLoading && (
           <div className="flex justify-start">
             <div className="loading-dots bg-stone-700 text-white p-3 rounded-lg shadow-md">
@@ -84,7 +108,6 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* input area */}
       <form
         onSubmit={handleSubmit}
         className="fixed bottom-0 w-full bg-stone-800 p-4 flex items-center justify-center shadow-inner z-10"
