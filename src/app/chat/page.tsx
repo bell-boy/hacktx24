@@ -18,7 +18,6 @@ export default function Chat() {
       setMessages(allMessages);
       setInput("");
       setIsLoading(true);
-      const userInput = input;
       try {
         // Send the input to the Flask server
         const response = await fetch("http://137.184.44.223:8000/query", {
