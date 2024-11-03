@@ -1,0 +1,13 @@
+/* /styles/custom.css */
+
+textarea {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
+  textarea:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
