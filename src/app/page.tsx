@@ -24,8 +24,8 @@ export default function Preview() {
               <Image
                 src="/gaveled.png" // Ensure this file exists in the public directory
                 alt="Loading Logo"
-                width={150}
-                height={150}
+                width={120}
+                height={120}
                 priority
               />
             </div>

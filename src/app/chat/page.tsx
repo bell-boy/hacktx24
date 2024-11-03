@@ -9,22 +9,24 @@ import '@/styles/custom.css';
 export default function Chat() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
-  const messagesEndRef = useRef<HTMLDivElement>(null); // Reference to the end of messages list
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
-      // Add the user's input to the chat
       setMessages([...messages, { text: input, isUser: true }]);
       setInput("");
+      setIsLoading(true);
 
-      // Mock chatbot response after a short delay (for demo purposes)
+      // Mock chatbot response after a short delay
       setTimeout(() => {
         setMessages((prevMessages) => [
           ...prevMessages,
           { text: "This is a response from the chatbot.", isUser: false },
         ]);
-      }, 500);
+        setIsLoading(false);
+      }, 1500);
     }
   };
 
@@ -35,14 +37,14 @@ export default function Chat() {
     }
   };
 
-  // Scroll to the bottom of the messages when a new message is added
+  // Scroll to the bottom of the chat when messages are updated
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isLoading]);
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-900 text-gray-100 font-sans">
-      {/* Fixed Header */}
+      {/* header */}
       <header className="fixed top-0 w-full bg-stone-900 text-white p-4 text-center flex items-center justify-center space-x-2 z-10">
         <Image
           src="/casemindlogo.png"
@@ -54,17 +56,14 @@ export default function Chat() {
         <h1 className="text-3xl font-bold">casemind.tech</h1>
       </header>
 
-      {/* Chat Messages Area */}
-      <div className="flex-grow pt-20 pb-32 overflow-y-auto space-y-4 p-4">
+      {/* chat messages */}
+      <div className="flex-grow pt-20 pb-40 overflow-y-auto space-y-4 p-4">
         {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
-          >
+          <div key={index} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
             <div
               className={`inline-block p-3 rounded-lg shadow-md ${message.isUser
-                ? 'bg-stone-800 text-white rounded-br-none' // User's message on the right
-                : 'bg-stone-700 text-white rounded-bl-none' // Chatbot's message on the left
+                ? 'bg-stone-800 text-white rounded-br-none'
+                : 'bg-stone-700 text-white rounded-bl-none'
                 }`}
               style={{ maxWidth: '70%' }}
             >
@@ -72,11 +71,20 @@ export default function Chat() {
             </div>
           </div>
         ))}
-        {/* This div will act as the end reference for scrolling */}
+        
+        {/* loading dots */}
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="loading-dots bg-stone-700 text-white p-3 rounded-lg shadow-md">
+              <div className="dot-flashing"></div>
+            </div>
+          </div>
+        )}
+        
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Fixed Input Area */}
+      {/* input area */}
       <form
         onSubmit={handleSubmit}
         className="fixed bottom-0 w-full bg-stone-800 p-4 flex items-center justify-center shadow-inner z-10"
@@ -91,9 +99,8 @@ export default function Chat() {
           />
           <button
             type="submit"
-            className="ml-1000 h-10 w-10 bg-stone-900 text-white rounded-full flex items-center justify-center hover:bg-stone-700 transition duration-150 -ml-20"
+            className="ml-2 h-10 w-10 bg-stone-900 text-white rounded-full flex items-center justify-center hover:bg-stone-700 transition duration-150"
           >
-            {/* Up arrow icon */}
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7 7 7M12 3v18" />
             </svg>
